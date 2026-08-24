@@ -4,15 +4,15 @@ authors = [
     { name = "Bhavesh Maheshwari", email = "maheshwaribhavesh95863@gmail.com" }
 ]
 description = "ERPNext Whitelabel - Customizable branding solution for ERPNext"
-requires-python = ">=3.10,<3.14"
+requires-python = ">=3.10,<3.15"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = [
-    # frappe dependencies
-    "frappe>=15.0",
-    "pypika @ git+https://github.com/frappe/pypika@2c50e6142b2d61d2d243e466fdd5dc03b3d918f2",
-    "gunicorn @ git+https://github.com/frappe/gunicorn@54b59ca884c79dcf04d4882658a32bbaf17e999f"
+    # "frappe~=15.0.0" # Installed and managed by bench.
 ]
+
+[tool.bench.frappe-dependencies]
+frappe = ">=15.0.0,<17.0.0"
 
 [project.urls]
 Homepage = "https://github.com/bhavesh95863/whitelabel"
