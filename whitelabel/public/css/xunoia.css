@@ -1,12 +1,9 @@
-:root {
-    --xunoia-brand-name: "Xunoia";
+.app-logo img {
+    max-height: 32px;
+    width: auto;
 }
 
 .app-logo {
     display: inline-flex;
     align-items: center;
-}
-
-.xunoia-navbar-title {
-    font-size: 14px;
 }

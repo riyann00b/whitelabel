@@ -5,37 +5,38 @@ import frappe
 
 DEFAULT_BRANDING = {
     "company_name": "Xunoia",
-    "product_name": "XunoiaERP",
-    "logo": "/assets/xunoia_whitelabel/images/xunoia Icon copy.png",
-    "favicon": "/assets/xunoia_whitelabel/images/favicon-32.png",
+    "product_name": "Xunoia",
+    "logo": "/assets/whitelabel/images/xunoia-logo.png",
+    "favicon": "/assets/whitelabel/images/favicon.png",
+    "website_url": "https://xunoia.com",
     "support_url": "https://support.xunoia.com",
     "documentation_url": "https://docs.xunoia.com",
-    "website_url": "https://xunoia.com",
     "contact_url": "https://support.xunoia.com/contact",
 }
 
 
-PRODUCT_BRANDING = {
-    "Accounting.xunoia.com": {
-        **DEFAULT_BRANDING,
-        "product_name": "Xunoia Accounting",
-    },
-    "ERP.xunoia.com": {
-        **DEFAULT_BRANDING,
-        "product_name": "Xunoia ERP",
-    },
-}
-
-
 def get_branding() -> dict:
-    site = frappe.local.site
+    branding = DEFAULT_BRANDING.copy()
 
-    branding = PRODUCT_BRANDING.get(site, DEFAULT_BRANDING).copy()
+    # Use Whitelabel Setting when available.
+    if frappe.db.exists("DocType", "Whitelabel Setting"):
+        settings = frappe.get_single("Whitelabel Setting")
 
-    # Allow future site-level overrides through Site Config.
-    custom = frappe.conf.get("xunoia_branding")
+        field_map = {
+            "company_name": "company_name",
+            "product_name": "product_name",
+            "logo": "logo",
+            "favicon": "favicon",
+            "website_url": "website_url",
+            "support_url": "support_url",
+            "documentation_url": "documentation_url",
+            "contact_url": "contact_url",
+        }
 
-    if isinstance(custom, dict):
-        branding.update(custom)
+        for target, fieldname in field_map.items():
+            value = getattr(settings, fieldname, None)
+
+            if value:
+                branding[target] = value
 
     return branding
