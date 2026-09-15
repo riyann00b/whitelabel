@@ -1,0 +1,12 @@
+:root {
+    --xunoia-brand-name: "Xunoia";
+}
+
+.app-logo {
+    display: inline-flex;
+    align-items: center;
+}
+
+.xunoia-navbar-title {
+    font-size: 14px;
+}

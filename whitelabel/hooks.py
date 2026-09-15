@@ -1,12 +1,12 @@
 from . import __version__ as app_version
 
-app_name = "whitelabel"
-app_title = "Whitelabel"
-app_publisher = "Bhavesh Maheshwari"
+app_name = "XunoiaERP"
+app_title = "XunoiaERP"
+app_publisher = "MD Riyan Nazeer"
 app_description = "ERPNext Whitelabel"
 app_icon = "octicon octicon-file-directory"
 app_color = "grey"
-app_email = "maheshwaribhavesh95863@gmail.com"
+app_email = "riyannazeer786@gmail.com"
 app_license = "MIT"
 
 # Get app logo
@@ -15,7 +15,7 @@ try:
 
 	app_logo_url = get_logo() or "/assets/whitelabel/images/whitelabel_logo.jpg"
 except (ImportError, Exception):
-	app_logo_url = "/assets/whitelabel/images/whitelabel_logo.jpg"
+	app_logo_url = "/assets/whitelabel/images/xunoia Icon copy.png"
 
 # Includes in <head>
 # ------------------
