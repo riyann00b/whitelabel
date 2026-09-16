@@ -90,8 +90,17 @@
 		};
 	}
 
-	function customize_menus() {
-		// Help menu
+	function customize_profile_menu() {
+		document
+			.querySelectorAll(".dropdown-menu-item .menu-item-title")
+			.forEach((title) => {
+				if (title.textContent === "Frappe Support") {
+					title.closest(".dropdown-menu-item")?.remove();
+				}
+			});
+	}
+
+	function customize_help_menu() {
 		document
 			.querySelectorAll(".frappe-menu.context-menu .dropdown-menu-item")
 			.forEach((item) => {
@@ -101,7 +110,7 @@
 					return;
 				}
 
-				const label = title.textContent.trim();
+				const label = title.textContent;
 
 				if (
 					label === "Frappe Support" ||
@@ -129,19 +138,11 @@
 					}
 				}
 			});
+	}
 
-		// Profile/user menus
-		document.querySelectorAll(".dropdown-menu-item").forEach((item) => {
-			const title = item.querySelector(".menu-item-title");
-
-			if (!title) {
-				return;
-			}
-
-			if (title.textContent.trim() === "Frappe Support") {
-				item.remove();
-			}
-		});
+	function customize_menus() {
+		customize_help_menu();
+		customize_profile_menu();
 	}
 
 	function watch_menus() {
@@ -157,3 +158,17 @@
 			childList: true,
 			subtree: true,
 		});
+
+		customize_menus();
+	}
+
+	function init() {
+		override_about();
+		apply_branding();
+		watch_menus();
+	}
+
+	frappe.ready(init);
+
+	$(document).on("app_ready", init);
+})();
