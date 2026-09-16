@@ -90,111 +90,70 @@
 		};
 	}
 
-	function customize_help_menu() {
-		const menu_items = document.querySelectorAll(
-			".frappe-menu.context-menu .dropdown-menu-item"
-		);
+	function customize_menus() {
+		// Help menu
+		document
+			.querySelectorAll(".frappe-menu.context-menu .dropdown-menu-item")
+			.forEach((item) => {
+				const title = item.querySelector(".menu-item-title");
 
-		menu_items.forEach((item) => {
+				if (!title) {
+					return;
+				}
+
+				const label = title.textContent.trim();
+
+				if (
+					label === "Frappe Support" ||
+					label === "System Health" ||
+					label === "Keyboard Shortcuts"
+				) {
+					item.remove();
+					return;
+				}
+
+				if (label === "About") {
+					title.textContent = "About Xunoia";
+
+					const link = item.querySelector("a");
+
+					if (link) {
+						link.onclick = function (event) {
+							event.preventDefault();
+							event.stopPropagation();
+
+							frappe.ui.toolbar.show_about();
+
+							return false;
+						};
+					}
+				}
+			});
+
+		// Profile/user menus
+		document.querySelectorAll(".dropdown-menu-item").forEach((item) => {
 			const title = item.querySelector(".menu-item-title");
 
 			if (!title) {
 				return;
 			}
 
-			const label = title.textContent.trim();
-
-			// Remove Frappe Support completely
-			if (label === "Frappe Support") {
-				item.remove();
-				return;
-			}
-
-			// Remove other unwanted Frappe items
-			if (
-				label === "System Health" ||
-				label === "Keyboard Shortcuts"
-			) {
-				item.remove();
-				return;
-			}
-
-			// Rename About
-			if (label === "About") {
-				title.textContent = "About Xunoia";
-
-				const link = item.querySelector("a");
-
-				if (link) {
-					link.onclick = function (event) {
-						event.preventDefault();
-						event.stopPropagation();
-
-						frappe.ui.toolbar.show_about();
-
-						return false;
-					};
-				}
-			}
-		});
-	}
-		);
-
-		menu_items.forEach((item) => {
-			const title = item.querySelector(".menu-item-title");
-
-			if (!title) {
-				return;
-			}
-
-			const label = title.textContent.trim();
-
-			if (label === "About") {
-				title.textContent = "About Xunoia";
-
-				const link = item.querySelector("a");
-
-				if (link) {
-					link.onclick = function (event) {
-						event.preventDefault();
-						event.stopPropagation();
-
-						frappe.ui.toolbar.show_about();
-
-						return false;
-					};
-				}
-
-				return;
-			}
-
-			if (
-				label === "Frappe Support" ||
-				label === "System Health" ||
-				label === "Keyboard Shortcuts"
-			) {
+			if (title.textContent.trim() === "Frappe Support") {
 				item.remove();
 			}
 		});
 	}
 
-	function watch_help_menu() {
+	function watch_menus() {
 		if (!document.body) {
 			return;
 		}
 
+		const observer = new MutationObserver(() => {
+			customize_menus();
+		});
+
 		observer.observe(document.body, {
 			childList: true,
 			subtree: true,
-
-
-	function init() {
-		override_about();
-		apply_branding();
-		watch_help_menu();
-	}
-
-	frappe.ready(init);
-
-	$(document).on("app_ready", init);
-})();
+		});
