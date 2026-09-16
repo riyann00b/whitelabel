@@ -30,7 +30,7 @@
 	}
 
 	function override_about() {
-		if (!frappe.ui || !frappe.ui.toolbar) {
+		if (!frappe.ui?.toolbar) {
 			return;
 		}
 
@@ -49,21 +49,15 @@
 			});
 
 			const website = branding.website_url
-				? `<a href="${branding.website_url}" target="_blank" rel="noopener noreferrer">
-						Website
-					</a>`
+				? `<a href="${branding.website_url}" target="_blank" rel="noopener noreferrer">Website</a>`
 				: "";
 
 			const documentation = branding.documentation_url
-				? `<a href="${branding.documentation_url}" target="_blank" rel="noopener noreferrer">
-						Documentation
-					</a>`
+				? `<a href="${branding.documentation_url}" target="_blank" rel="noopener noreferrer">Documentation</a>`
 				: "";
 
 			const support = branding.support_url
-				? `<a href="${branding.support_url}" target="_blank" rel="noopener noreferrer">
-						Support
-					</a>`
+				? `<a href="${branding.support_url}" target="_blank" rel="noopener noreferrer">Support</a>`
 				: "";
 
 			dialog.$body.html(`
@@ -96,9 +90,70 @@
 		};
 	}
 
+	function customize_help_menu() {
+		const menu_items = document.querySelectorAll(
+			".frappe-menu.context-menu .dropdown-menu-item"
+		);
+
+		menu_items.forEach((item) => {
+			const title = item.querySelector(".menu-item-title");
+
+			if (!title) {
+				return;
+			}
+
+			const label = title.textContent.trim();
+
+			if (label === "About") {
+				title.textContent = "About Xunoia";
+
+				const link = item.querySelector("a");
+
+				if (link) {
+					link.onclick = function (event) {
+						event.preventDefault();
+						event.stopPropagation();
+
+						frappe.ui.toolbar.show_about();
+
+						return false;
+					};
+				}
+
+				return;
+			}
+
+			if (
+				label === "Frappe Support" ||
+				label === "System Health" ||
+				label === "Keyboard Shortcuts"
+			) {
+				item.remove();
+			}
+		});
+	}
+
+	function watch_help_menu() {
+		if (!document.body) {
+			return;
+		}
+
+		const observer = new MutationObserver(() => {
+			customize_help_menu();
+		});
+
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true,
+		});
+
+		customize_help_menu();
+	}
+
 	function init() {
 		override_about();
 		apply_branding();
+		watch_help_menu();
 	}
 
 	frappe.ready(init);
