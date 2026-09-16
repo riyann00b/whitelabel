@@ -104,6 +104,51 @@
 
 			const label = title.textContent.trim();
 
+			// Remove Frappe Support completely
+			if (label === "Frappe Support") {
+				item.remove();
+				return;
+			}
+
+			// Remove other unwanted Frappe items
+			if (
+				label === "System Health" ||
+				label === "Keyboard Shortcuts"
+			) {
+				item.remove();
+				return;
+			}
+
+			// Rename About
+			if (label === "About") {
+				title.textContent = "About Xunoia";
+
+				const link = item.querySelector("a");
+
+				if (link) {
+					link.onclick = function (event) {
+						event.preventDefault();
+						event.stopPropagation();
+
+						frappe.ui.toolbar.show_about();
+
+						return false;
+					};
+				}
+			}
+		});
+	}
+		);
+
+		menu_items.forEach((item) => {
+			const title = item.querySelector(".menu-item-title");
+
+			if (!title) {
+				return;
+			}
+
+			const label = title.textContent.trim();
+
 			if (label === "About") {
 				title.textContent = "About Xunoia";
 
@@ -138,17 +183,10 @@
 			return;
 		}
 
-		const observer = new MutationObserver(() => {
-			customize_help_menu();
-		});
-
 		observer.observe(document.body, {
 			childList: true,
 			subtree: true,
-		});
 
-		customize_help_menu();
-	}
 
 	function init() {
 		override_about();
