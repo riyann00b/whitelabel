@@ -12,6 +12,7 @@ app_include_css = [
 
 app_include_js = [
     "/assets/whitelabel/js/xunoia.js",
+    "/assets/whitelabel/js/about.js",
 ]
 
 web_include_css = [
