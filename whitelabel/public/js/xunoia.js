@@ -1,33 +1,107 @@
 (function () {
-    "use strict";
+	"use strict";
 
-    function branding() {
-        const data = frappe.boot?.xunoia?.branding;
+	function get_branding() {
+		return frappe.boot?.xunoia?.branding || {};
+	}
 
-        if (!data) {
-            return;
-        }
+	function apply_branding() {
+		const branding = get_branding();
 
-        document.title = data.product_name;
+		if (!branding) {
+			return;
+		}
 
-        const logo = document.querySelector(".app-logo img");
+		if (branding.product_name) {
+			document.title = branding.product_name;
+		}
 
-        if (logo) {
-            logo.src = data.logo;
-        }
+		const logo = document.querySelector(".app-logo img");
 
-        const logoContainer = document.querySelector(".app-logo");
+		if (logo && branding.logo) {
+			logo.src = branding.logo;
+		}
 
-        if (logoContainer) {
-            logoContainer.setAttribute("title", data.product_name);
-        }
-    }
+		const logo_container = document.querySelector(".app-logo");
 
-    function run() {
-        branding();
-    }
+		if (logo_container && branding.product_name) {
+			logo_container.setAttribute("title", branding.product_name);
+		}
+	}
 
-    frappe.ready(run);
+	function override_about() {
+		if (!frappe.ui || !frappe.ui.toolbar) {
+			return;
+		}
 
-    $(document).on("app_ready", run);
+		frappe.ui.toolbar.show_about = function () {
+			const branding = get_branding();
+
+			const product_name = branding.product_name || "Xunoia";
+			const company_name = branding.company_name || "Xunoia";
+			const logo =
+				branding.logo ||
+				"/assets/whitelabel/images/xunoia-logo.png";
+
+			const dialog = new frappe.ui.Dialog({
+				title: __("About {0}", [product_name]),
+				size: "small",
+			});
+
+			const website = branding.website_url
+				? `<a href="${branding.website_url}" target="_blank" rel="noopener noreferrer">
+						Website
+					</a>`
+				: "";
+
+			const documentation = branding.documentation_url
+				? `<a href="${branding.documentation_url}" target="_blank" rel="noopener noreferrer">
+						Documentation
+					</a>`
+				: "";
+
+			const support = branding.support_url
+				? `<a href="${branding.support_url}" target="_blank" rel="noopener noreferrer">
+						Support
+					</a>`
+				: "";
+
+			dialog.$body.html(`
+				<div class="xunoia-about">
+					<img
+						class="xunoia-about-logo"
+						src="${logo}"
+						alt="${product_name}"
+					>
+
+					<h3 class="xunoia-about-title">
+						${product_name}
+					</h3>
+
+					<p class="xunoia-about-company">
+						${company_name}
+					</p>
+
+					<div class="xunoia-about-links">
+						${website}
+						${documentation}
+						${support}
+					</div>
+				</div>
+			`);
+
+			dialog.show();
+
+			return false;
+		};
+	}
+
+	function init() {
+		override_about();
+		apply_branding();
+	}
+
+	frappe.ready(init);
+
+	$(document).on("app_ready", init);
 })();
